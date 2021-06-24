@@ -1,10 +1,10 @@
 from fastapi import FastAPI
-from app.api.router.casts import casts
+from app.api.router.users import users
 from app.crud.db import metadata, database, engine
 
 metadata.create_all(engine)
 
-app = FastAPI(openapi_url="/api/v1/casts/openapi.json", docs_url="/api/v1/casts/docs")
+app = FastAPI(openapi_url="/api/v1/users/openapi.json", docs_url="/api/v1/users/docs")
 
 @app.on_event("startup")
 async def startup():
@@ -14,4 +14,4 @@ async def startup():
 async def shutdown():
     await database.disconnect()
 
-app.include_router(casts, prefix='/api/v1/casts', tags=['casts'])
+app.include_router(users, prefix='/api/v1/users', tags=['users'])

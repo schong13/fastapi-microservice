@@ -1,12 +1,12 @@
-from app.schema.casts import CastIn, CastOut, CastUpdate
+from app.schema.users import UserIn, UserOut, UserUpdate
 from app.crud.db import database
-from app.api.router import casts
+from app.api.router import users
 
-async def add_cast(payload: CastIn):
-    query = casts.insert().values(**payload.dict())
+async def add_user(payload: UserIn):
+    query = users.insert().values(**payload.dict())
 
     return await database.execute(query=query)
 
-async def get_cast(id):
-    query = casts.select(casts.c.id==id)
+async def get_user(id):
+    query = users.select(users.c.id==id)
     return await database.fetch_one(query=query)

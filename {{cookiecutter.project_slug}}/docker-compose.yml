@@ -1,0 +1,35 @@
+version: '3.7'
+
+services:
+  {{cookiecutter.project_name}}:
+    build: ./{{cookiecutter.project_name}}
+    command: uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+    volumes:
+      - ./{{cookiecutter.project_name}}/:/app/
+    ports:
+      - 8001:8000
+    environment:
+      - DATABASE_URI=postgresql://{{cookiecutter.postgres_user}}:{{cookiecutter.postgres_password}}@{{cookiecutter.postgres_database}}_db/{{cookiecutter.postgres_database}}_db_dev
+    depends_on:
+      - {{cookiecutter.postgres_database}}_db
+
+  {{cookiecutter.postgres_database}}_db:
+    image: postgres:12.1-alpine
+    volumes:
+      - postgres_data_user:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER={{cookiecutter.postgres_user}}
+      - POSTGRES_PASSWORD={{cookiecutter.postgres_password}}
+      - POSTGRES_DB={{cookiecutter.postgres_database}}_db_dev
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./nginx_config.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - {{cookiecutter.project_name}}
+
+volumes:
+  postgres_data_user:
